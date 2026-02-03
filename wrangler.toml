@@ -1,0 +1,12 @@
+name = "orangeoreo"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./dist"
+
+# KV namespace for email subscribers
+# Create in Cloudflare dashboard: Workers & Pages > KV > Create namespace
+# Then bind in Pages project settings OR use the ID below for local dev
+[[kv_namespaces]]
+binding = "SUBSCRIBERS"
+id = "your-kv-namespace-id-here"  # Replace after creating in dashboard

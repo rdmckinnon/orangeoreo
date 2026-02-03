@@ -1,0 +1,18 @@
+---
+interface Props {
+  name: string;
+  initial: string;
+  role: string;
+  emoji: string;
+  description: string;
+}
+
+const { name, initial, role, emoji, description } = Astro.props;
+---
+
+<div class="band-member" data-initial={initial}>
+  <h3 class="member-name">{name}</h3>
+  <p class="member-role">{role}</p>
+  <p class="member-desc">{description}</p>
+  <div class="member-emoji">{emoji}</div>
+</div>

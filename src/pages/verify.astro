@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Verify Ticket">
+  <div class="verify-page">
+    <div class="verify-container">
+      <div class="verify-header">
+        <div class="logo">ORANGE <span>OREO</span></div>
+        <div class="tour">CITRUS DREAMS TOUR 2026</div>
+      </div>
+
+      <div class="verify-card">
+        <div class="status">
+          <span class="status-icon">✓</span>
+          <span class="status-text">VALID TICKET</span>
+        </div>
+
+        <div class="ticket-info">
+          <div class="info-row">
+            <span class="label">TICKET</span>
+            <span class="value" id="ticketId">-</span>
+          </div>
+          <div class="info-row">
+            <span class="label">NAME</span>
+            <span class="value" id="ticketName">-</span>
+          </div>
+          <div class="info-row">
+            <span class="label">TYPE</span>
+            <span class="value" id="ticketType">-</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="/" class="back-link">← orangeoreo.com</a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .verify-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #FF9F1C 0%, #FFBF69 50%, #50D6C9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .verify-container {
+    text-align: center;
+  }
+
+  .verify-header {
+    margin-bottom: 40px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: #0A0A0A;
+    letter-spacing: 4px;
+  }
+
+  .logo span {
+    color: #FFFFFF;
+  }
+
+  .tour {
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    color: rgba(0,0,0,0.6);
+    margin-top: 8px;
+  }
+
+  .verify-card {
+    background: #FFFFFF;
+    padding: 48px;
+    max-width: 400px;
+    margin: 0 auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+
+  .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #0A0A0A;
+  }
+
+  .status-icon {
+    width: 40px;
+    height: 40px;
+    background: #2EC4B6;
+    color: #FFFFFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  .status-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    color: #2EC4B6;
+  }
+
+  .ticket-info {
+    text-align: left;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .info-row:last-child {
+    border-bottom: none;
+  }
+
+  .label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: rgba(0,0,0,0.4);
+  }
+
+  .value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 32px;
+    color: #0A0A0A;
+    font-size: 0.85rem;
+    text-decoration: none;
+    opacity: 0.6;
+  }
+
+  .back-link:hover {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  // Parse URL params and display ticket info
+  const params = new URLSearchParams(window.location.search);
+
+  const ticketId = params.get('t') || '-';
+  const name = params.get('n') || '-';
+  const type = params.get('type') || '-';
+
+  document.getElementById('ticketId')!.textContent = ticketId;
+  document.getElementById('ticketName')!.textContent = decodeURIComponent(name);
+  document.getElementById('ticketType')!.textContent = decodeURIComponent(type);
+</script>

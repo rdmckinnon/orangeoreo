@@ -1,0 +1,247 @@
+---
+// Ticket generator form
+---
+
+<div class="form-side">
+  <h2 class="form-title">CREATE YOUR TICKET</h2>
+  <p class="form-subtitle">Fill in your details to generate a custom concert ticket</p>
+
+  <form id="ticketForm">
+    <div class="form-group">
+      <label class="form-label" for="attendeeName">Your Name <span style="color: #FF9F1C;">*</span></label>
+      <input
+        type="text"
+        id="attendeeName"
+        class="input form-input"
+        placeholder="Enter your name"
+        required
+        value=""
+      />
+      <p id="nameError" style="color: #e53935; font-size: 0.8rem; margin-top: 8px; display: none;">Please enter your name</p>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="eventDate">Event Date</label>
+        <input
+          type="date"
+          id="eventDate"
+          class="input form-input"
+          min="2026-06-06"
+          max="2026-08-01"
+        />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="doorsTime">Doors Open</label>
+        <input
+          type="time"
+          id="doorsTime"
+          class="input form-input"
+          value="19:00"
+        />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label" for="section">Section</label>
+        <input
+          type="text"
+          id="section"
+          class="input form-input"
+          placeholder="e.g., FLOOR, BALCONY"
+          value="FLOOR"
+        />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="seat">Seat</label>
+        <input
+          type="text"
+          id="seat"
+          class="input form-input"
+          value="678"
+          readonly
+          style="background: rgba(0,0,0,0.05); cursor: not-allowed;"
+        />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="ticketType">Ticket Type</label>
+      <select id="ticketType" class="input form-input" onchange="updateSeatFromType()">
+        <option value="VIP ACCESS|678">VIP Access</option>
+        <option value="MEMBER|005">Member</option>
+        <option value="FOOD & DRINK|098">Food & Drink</option>
+        <option value="PREMIUM|818">Premium</option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-primary" onclick="updateTicket()">UPDATE TICKET</button>
+      <button type="button" class="btn btn-outline" onclick="window.print()">PRINT</button>
+      <button type="button" class="btn btn-outline" onclick="shareTicket()">SHARE</button>
+    </div>
+  </form>
+</div>
+
+<script is:inline>
+  function updateSeatFromType() {
+    const ticketTypeValue = document.getElementById('ticketType').value;
+    const [, seat] = ticketTypeValue.split('|');
+    document.getElementById('seat').value = seat;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return 'MAR 15';
+    const date = new Date(dateStr);
+    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    return months[date.getMonth()] + ' ' + date.getDate();
+  }
+
+  function formatTime(timeStr) {
+    if (!timeStr) return '7:00 PM';
+    const [hours, minutes] = timeStr.split(':');
+    const h = parseInt(hours);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    return h12 + ':' + minutes + ' ' + ampm;
+  }
+
+  function generateTicketNumber(date, section, seat) {
+    const d = date ? new Date(date) : new Date();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const sec = (section || 'FL').substring(0, 2).toUpperCase();
+    const st = (seat || 'A1').toUpperCase();
+    return `OO-2026-${month}${day}-${sec}${st}`;
+  }
+
+  async function updateTicket() {
+    const nameInput = document.getElementById('attendeeName');
+    const nameError = document.getElementById('nameError');
+    const name = nameInput.value.trim();
+
+    // Validate name
+    if (!name) {
+      nameError.style.display = 'block';
+      nameInput.style.borderColor = '#e53935';
+      nameInput.focus();
+      return;
+    }
+    nameError.style.display = 'none';
+    nameInput.style.borderColor = '';
+
+    const date = document.getElementById('eventDate').value;
+    const time = document.getElementById('doorsTime').value;
+    const section = document.getElementById('section').value || 'FLOOR';
+    const seat = document.getElementById('seat').value || 'A12';
+    const ticketTypeValue = document.getElementById('ticketType').value;
+    const [ticketType, denotation] = ticketTypeValue.split('|');
+
+    // Save ticket request to backend
+    try {
+      await fetch('/api/ticket', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          date,
+          doors: formatTime(time),
+          section,
+          seat,
+          ticketType,
+          denotation
+        })
+      });
+    } catch (e) {
+      // Silent fail - ticket display still works
+    }
+
+    // Update ticket display
+    document.getElementById('ticketAttendee').textContent = name.toUpperCase();
+    document.getElementById('ticketDate').textContent = formatDate(date);
+    document.getElementById('ticketDoors').textContent = formatTime(time);
+    document.getElementById('ticketSection').textContent = section.toUpperCase();
+    document.getElementById('ticketSeat').textContent = seat.toUpperCase();
+    document.getElementById('ticketTypeBadge').textContent = ticketType;
+    document.getElementById('ticketNumberDisplay').textContent = generateTicketNumber(date, section, seat);
+
+    // Regenerate barcode for visual change
+    const barcode = document.getElementById('barcode');
+    barcode.innerHTML = '';
+    for (let i = 0; i < 50; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'bar';
+      bar.style.height = (Math.random() * 20 + 25) + 'px';
+      bar.style.width = (Math.random() > 0.6 ? 3 : 2) + 'px';
+      barcode.appendChild(bar);
+    }
+
+    // Regenerate QR with ticket data
+    const ticketNumber = generateTicketNumber(date, section, seat);
+    const qrData = `https://orangeoreo.com/verify?t=${ticketNumber}&n=${encodeURIComponent(name.toUpperCase())}&type=${encodeURIComponent(ticketType)}`;
+    if (window.generateQRCode) {
+      window.generateQRCode(qrData);
+    }
+  }
+
+  // Set default date to tour start
+  document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('eventDate');
+    if (dateInput) {
+      dateInput.value = '2026-06-06'; // Tour start date
+    }
+  });
+
+  // Share ticket as image
+  async function shareTicket() {
+    const ticket = document.getElementById('ticket');
+    if (!ticket) return;
+
+    // Load html2canvas dynamically
+    if (!window.html2canvas) {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      document.head.appendChild(script);
+      await new Promise(resolve => script.onload = resolve);
+    }
+
+    try {
+      const canvas = await window.html2canvas(ticket, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true
+      });
+
+      // Convert to blob
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'orange-oreo-ticket.png', { type: 'image/png' });
+
+        // Try native share if available
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: 'Orange Oreo Ticket',
+              text: 'Check out my ticket for the Citrus Dreams Tour!'
+            });
+            return;
+          } catch (e) {
+            // Fall through to download
+          }
+        }
+
+        // Fallback: download
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'orange-oreo-ticket.png';
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    } catch (e) {
+      alert('Could not generate ticket image');
+    }
+  }
+
+  </script>

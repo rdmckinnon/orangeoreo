@@ -1,0 +1,353 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Admin">
+  <div class="admin-page">
+    <div class="admin-container">
+      <h1 class="admin-title">ADMIN</h1>
+
+      <div id="login-form" class="login-section">
+        <input
+          type="password"
+          id="password"
+          class="input"
+          placeholder="Admin password"
+          autocomplete="current-password"
+        />
+        <button id="login-btn" class="btn btn-primary">UNLOCK</button>
+      </div>
+
+      <div id="admin-content" style="display: none;">
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab active" data-tab="subscribers">CREW LIST</button>
+          <button class="tab" data-tab="tickets">TICKET REQUESTS</button>
+        </div>
+
+        <!-- Subscribers Tab -->
+        <div id="subscribers-tab" class="tab-content active">
+          <div class="stats">
+            <span id="sub-count">0</span> subscribers
+          </div>
+          <div class="actions">
+            <button id="refresh-subs-btn" class="btn btn-outline">REFRESH</button>
+            <button id="export-subs-btn" class="btn btn-outline">EXPORT CSV</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="subscribers-list"></tbody>
+          </table>
+        </div>
+
+        <!-- Tickets Tab -->
+        <div id="tickets-tab" class="tab-content">
+          <div class="stats">
+            <span id="ticket-count">0</span> ticket requests
+          </div>
+          <div class="actions">
+            <button id="refresh-tickets-btn" class="btn btn-outline">REFRESH</button>
+            <button id="export-tickets-btn" class="btn btn-outline">EXPORT CSV</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Section</th>
+                <th>Requested</th>
+              </tr>
+            </thead>
+            <tbody id="tickets-list"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p id="error-message" class="error-message"></p>
+
+      <a href="/" class="back-link">← Back to site</a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .admin-page {
+    min-height: 100vh;
+    background: #0A0A0A;
+    padding: 60px 20px;
+  }
+
+  .admin-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .admin-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    color: #FFFFFF;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+
+  .login-section {
+    display: flex;
+    gap: 0;
+    max-width: 400px;
+  }
+
+  .login-section .input {
+    flex: 1;
+    border-right: none;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+  }
+
+  .tab {
+    background: none;
+    border: none;
+    padding: 16px 32px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s;
+  }
+
+  .tab:hover {
+    color: #FFFFFF;
+  }
+
+  .tab.active {
+    color: #FF9F1C;
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #FF9F1C;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .stats {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: #FF9F1C;
+    margin-bottom: 24px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .actions .btn {
+    border-color: #FFFFFF;
+    color: #FFFFFF;
+  }
+
+  .actions .btn:hover {
+    background: #FFFFFF;
+    color: #0A0A0A;
+  }
+
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 16px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .error-message {
+    color: #e53935;
+    margin-top: 16px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 48px;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    color: #FF9F1C;
+  }
+</style>
+
+<script>
+  let currentPassword = '';
+  let subscribers: any[] = [];
+  let tickets: any[] = [];
+
+  const loginForm = document.getElementById('login-form');
+  const passwordInput = document.getElementById('password') as HTMLInputElement;
+  const loginBtn = document.getElementById('login-btn');
+  const adminContent = document.getElementById('admin-content');
+  const errorMessage = document.getElementById('error-message');
+
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      const tabId = tab.getAttribute('data-tab') + '-tab';
+      document.getElementById(tabId)?.classList.add('active');
+    });
+  });
+
+  async function login(password: string) {
+    errorMessage!.textContent = '';
+
+    try {
+      const res = await fetch('/api/admin/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        currentPassword = password;
+        loginForm!.style.display = 'none';
+        adminContent!.style.display = 'block';
+
+        // Load both datasets
+        loadSubscribers();
+        loadTickets();
+      } else {
+        errorMessage!.textContent = data.error || 'Access denied';
+      }
+    } catch (err) {
+      errorMessage!.textContent = 'Failed to connect';
+    }
+  }
+
+  async function loadSubscribers() {
+    try {
+      const res = await fetch('/api/admin/subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: currentPassword })
+      });
+      const data = await res.json();
+      if (data.success) {
+        subscribers = data.subscribers;
+        document.getElementById('sub-count')!.textContent = data.count;
+        renderSubscribers();
+      }
+    } catch (e) {}
+  }
+
+  async function loadTickets() {
+    try {
+      const res = await fetch('/api/admin/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: currentPassword })
+      });
+      const data = await res.json();
+      if (data.success) {
+        tickets = data.tickets;
+        document.getElementById('ticket-count')!.textContent = data.count;
+        renderTickets();
+      }
+    } catch (e) {}
+  }
+
+  function renderSubscribers() {
+    const list = document.getElementById('subscribers-list')!;
+    list.innerHTML = subscribers.map(sub => `
+      <tr>
+        <td style="color: #FFFFFF; padding: 16px;">${sub.email}</td>
+        <td style="color: rgba(255,255,255,0.5); padding: 16px; font-size: 0.85rem;">
+          ${sub.subscribedAt ? new Date(sub.subscribedAt).toLocaleDateString() : '-'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderTickets() {
+    const list = document.getElementById('tickets-list')!;
+    list.innerHTML = tickets.map(t => `
+      <tr>
+        <td style="color: #FFFFFF; padding: 16px;">${t.name}</td>
+        <td style="color: #FFFFFF; padding: 16px;">${t.date || '-'}</td>
+        <td style="color: #FFFFFF; padding: 16px;">${t.section || '-'}</td>
+        <td style="color: rgba(255,255,255,0.5); padding: 16px; font-size: 0.85rem;">
+          ${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : '-'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function exportSubscribersCSV() {
+    const csv = ['email,subscribed_at']
+      .concat(subscribers.map(s => `${s.email},${s.subscribedAt || ''}`))
+      .join('\n');
+    downloadCSV(csv, 'orangeoreo-subscribers');
+  }
+
+  function exportTicketsCSV() {
+    const csv = ['name,date,section,seat,ticket_type,requested_at']
+      .concat(tickets.map(t =>
+        `${t.name},${t.date || ''},${t.section || ''},${t.seat || ''},${t.ticketType || ''},${t.createdAt || ''}`
+      ))
+      .join('\n');
+    downloadCSV(csv, 'orangeoreo-tickets');
+  }
+
+  function downloadCSV(csv: string, filename: string) {
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  }
+
+  // Event listeners
+  loginBtn?.addEventListener('click', () => login(passwordInput?.value || ''));
+  passwordInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') login(passwordInput.value);
+  });
+
+  document.getElementById('refresh-subs-btn')?.addEventListener('click', loadSubscribers);
+  document.getElementById('refresh-tickets-btn')?.addEventListener('click', loadTickets);
+  document.getElementById('export-subs-btn')?.addEventListener('click', exportSubscribersCSV);
+  document.getElementById('export-tickets-btn')?.addEventListener('click', exportTicketsCSV);
+</script>

@@ -1,0 +1,122 @@
+---
+// Hero section with split layout
+---
+
+<section class="hero">
+  <div class="hero-left">
+    <h1 class="hero-title">
+      ORANGE
+      <span class="highlight">OREO</span>
+    </h1>
+    <p class="hero-subtitle">
+      Sweet melodies, citrus dreams. Two cousins, one unstoppable sound.
+      Welcome to the juiciest pop duo of 2026.
+    </p>
+
+    <div class="countdown">
+      <div class="countdown-label">CITRUS DREAMS TOUR STARTS IN</div>
+      <div class="countdown-timer" id="countdown">
+        <div class="countdown-block">
+          <span class="countdown-value" id="days">---</span>
+          <span class="countdown-unit">DAYS</span>
+        </div>
+        <div class="countdown-block">
+          <span class="countdown-value" id="hours">--</span>
+          <span class="countdown-unit">HRS</span>
+        </div>
+        <div class="countdown-block">
+          <span class="countdown-value" id="minutes">--</span>
+          <span class="countdown-unit">MIN</span>
+        </div>
+        <div class="countdown-block">
+          <span class="countdown-value" id="seconds">--</span>
+          <span class="countdown-unit">SEC</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="/tickets" class="hero-cta">
+      GET TICKETS →
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-badge">ADDY & EMMA</div>
+  </div>
+</section>
+
+<style>
+  .countdown {
+    margin-top: 32px;
+  }
+
+  .countdown-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 12px;
+  }
+
+  .countdown-timer {
+    display: flex;
+    gap: 16px;
+  }
+
+  .countdown-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: #FF9F1C;
+    line-height: 1;
+  }
+
+  .countdown-unit {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .countdown-value {
+      font-size: 1.8rem;
+    }
+    .countdown-timer {
+      gap: 12px;
+    }
+  }
+</style>
+
+<script is:inline>
+  const tourDate = new Date('2026-06-06T19:00:00').getTime();
+
+  function updateCountdown() {
+    const now = new Date().getTime();
+    const diff = tourDate - now;
+
+    if (diff <= 0) {
+      document.getElementById('days').textContent = '0';
+      document.getElementById('hours').textContent = '0';
+      document.getElementById('minutes').textContent = '0';
+      document.getElementById('seconds').textContent = '0';
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    document.getElementById('days').textContent = days;
+    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+</script>

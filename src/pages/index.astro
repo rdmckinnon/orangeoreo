@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Marquee from '../components/Marquee.astro';
+import Hero from '../components/Hero.astro';
+import BandMember from '../components/BandMember.astro';
+import Statement from '../components/Statement.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Home">
+  <Marquee />
+  <Hero />
+
+  <!-- Meet the Band Section -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">MEET THE BAND</h2>
+      </div>
+      <div class="band-grid">
+        <BandMember
+          name="ADDY"
+          initial="A"
+          role="Co-Founder / Vocals"
+          emoji="🍊"
+          description="The orange to the oreo. Addy brings the sunshine, the energy, and the citrus-powered vocals that make every song pop. When she's not writing lyrics, she's dreaming up the next big thing."
+        />
+        <BandMember
+          name="EMMA"
+          initial="E"
+          role="Co-Founder / Vocals"
+          emoji="🍪"
+          description="The oreo to the orange. Emma brings the sweet harmonies, the creative vision, and the cookie-crumb trail of musical magic. Together with Addy, they're unstoppable."
+        />
+      </div>
+    </div>
+  </section>
+
+  <Statement />
+
+  <!-- Our Sound Section -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <h2 class="section-title">OUR SOUND</h2>
+      </div>
+      <p style="max-width: 600px; line-height: 1.8; opacity: 0.7;">
+        Orange Oreo blends bubblegum pop with a modern edge. Think catchy hooks,
+        sunny melodies, and lyrics that stick with you like your favorite snack.
+        We write songs about friendship, summer vibes, and chasing your dreams—because
+        that's what we do every single day.
+      </p>
+      <div style="margin-top: 40px;">
+        <a href="/tickets" class="btn btn-primary">GET TICKETS →</a>
+      </div>
+    </div>
+  </section>
+
+  <EmailSignup />
+  <Footer />
+</Layout>

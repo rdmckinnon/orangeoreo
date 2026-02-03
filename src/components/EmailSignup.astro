@@ -1,0 +1,88 @@
+---
+// Email signup section
+---
+
+<section class="email-section">
+  <div class="container">
+    <div class="email-content">
+      <h2 class="email-title">JOIN THE CREW</h2>
+      <p class="email-subtitle">
+        Be the first to know about new drops, tour dates, and exclusive behind-the-scenes content.
+      </p>
+      <form class="email-form" id="subscribe-form">
+        <input
+          type="email"
+          class="input"
+          id="email-input"
+          placeholder="your@email.com"
+          required
+          aria-label="Email address"
+        />
+        <button type="submit" class="btn btn-primary" id="subscribe-btn">SUBSCRIBE</button>
+      </form>
+      <p class="form-message" id="form-message"></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .form-message {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    min-height: 24px;
+  }
+  .form-message.success {
+    color: var(--sea-green-dark);
+  }
+  .form-message.error {
+    color: #e53935;
+  }
+  #subscribe-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+
+<script>
+  const form = document.getElementById('subscribe-form');
+  const input = document.getElementById('email-input');
+  const btn = document.getElementById('subscribe-btn');
+  const message = document.getElementById('form-message');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = input?.value;
+    if (!email) return;
+
+    btn.disabled = true;
+    btn.textContent = 'JOINING...';
+    message.textContent = '';
+    message.className = 'form-message';
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        message.textContent = "YOU'RE IN! WELCOME TO THE CREW.";
+        message.className = 'form-message success';
+        input.value = '';
+      } else {
+        message.textContent = data.error || 'Something went wrong';
+        message.className = 'form-message error';
+      }
+    } catch (err) {
+      message.textContent = 'Could not connect. Try again later.';
+      message.className = 'form-message error';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'SUBSCRIBE';
+  });
+</script>

@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import TicketForm from '../components/TicketForm.astro';
+import Ticket from '../components/Ticket.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Get Tickets" description="Create your custom Orange Oreo concert ticket">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <a href="/" class="page-logo">ORANGE <span>OREO</span></a>
+      <div class="page-badge">CITRUS DREAMS TOUR 2026</div>
+    </div>
+  </header>
+
+  <!-- Ticket Generator -->
+  <main class="ticket-generator">
+    <TicketForm />
+    <div class="ticket-side">
+      <span class="ticket-label">LIVE PREVIEW</span>
+      <Ticket />
+    </div>
+  </main>
+
+  <EmailSignup />
+  <Footer />
+</Layout>
+
+<style>
+  .ticket-generator {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 80px);
+  }
+
+  @media (max-width: 1024px) {
+    .ticket-generator {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
