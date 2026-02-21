@@ -53,8 +53,48 @@ import Footer from '../components/Footer.astro';
         We write songs about friendship, summer vibes, and chasing your dreams—because
         that's what we do every single day.
       </p>
-      <div style="margin-top: 40px;">
+      <div style="margin-top: 40px; display: flex; gap: 16px; flex-wrap: wrap;">
         <a href="/tickets" class="btn btn-primary">GET TICKETS →</a>
+        <a href="/guestbook" class="btn btn-outline">SIGN THE WALL →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Merch Section -->
+  <section>
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <h2 class="section-title">MERCH</h2>
+      </div>
+      <div class="merch-grid">
+        <div class="merch-card reveal">
+          <span class="merch-emoji">🍦</span>
+          <div class="merch-name">CITRUS DREAM ICE CREAM</div>
+          <div class="merch-price">$8</div>
+          <span class="merch-badge">LIMITED BATCH</span>
+        </div>
+        <div class="merch-card reveal reveal-delay-1">
+          <span class="merch-emoji">🖼️</span>
+          <div class="merch-name">OO TOUR POSTERS</div>
+          <div class="merch-price">$12</div>
+          <span class="merch-badge">COMING SOON</span>
+        </div>
+        <div class="merch-card reveal reveal-delay-2">
+          <span class="merch-emoji">🖊️</span>
+          <div class="merch-name">OO CITRUS PENS</div>
+          <div class="merch-price">$5</div>
+          <span class="merch-badge">PACK OF 3</span>
+        </div>
+        <div class="merch-card reveal reveal-delay-3">
+          <span class="merch-emoji">☕</span>
+          <div class="merch-name">MUGS & MINI ERASERS</div>
+          <div class="merch-price">$15</div>
+          <span class="merch-badge">COMBO PACK</span>
+        </div>
+      </div>
+      <div style="margin-top: 40px; text-align: center;">
+        <a href="/merch" class="btn btn-outline">VIEW ALL MERCH →</a>
       </div>
     </div>
   </section>

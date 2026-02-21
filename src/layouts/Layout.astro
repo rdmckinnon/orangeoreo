@@ -10,10 +10,10 @@ interface Props {
 const {
   title,
   description = "Sweet melodies, citrus dreams — Addy & Emma's pop duo",
-  image = "/og-image.svg"
+  image = "/og-image.png"
 } = Astro.props;
 
-const siteUrl = "https://orangeoreo.com";
+const siteUrl = "https://orangeoreo.pages.dev";
 const fullTitle = `${title} | Orange Oreo`;
 const imageUrl = `${siteUrl}${image}`;
 ---
@@ -47,6 +47,102 @@ const imageUrl = `${siteUrl}${image}`;
     <slot />
     <!-- Cloudflare Web Analytics -->
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "826027d6e1b54e7b8b9852718d18fd64"}'></script>
+
+    <!-- Scroll Reveal Observer -->
+    <script is:inline>
+      function initReveal() {
+        const els = document.querySelectorAll('.reveal');
+        if (!els.length) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+        }, { threshold: 0.15 });
+        els.forEach(el => observer.observe(el));
+      }
+      initReveal();
+      document.addEventListener('astro:after-swap', initReveal);
+    </script>
+
+    <!-- Confetti -->
+    <script is:inline>
+      window.fireConfetti = function() {
+        var canvas = document.createElement('canvas');
+        canvas.className = 'confetti-canvas';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        var colors = ['#FF9F1C', '#FFBF69', '#2EC4B6', '#CBF3F0', '#FFFFFF', '#50D6C9'];
+        var particles = [];
+        for (var i = 0; i < 120; i++) {
+          particles.push({
+            x: canvas.width / 2 + (Math.random() - 0.5) * 400,
+            y: canvas.height + 10,
+            vx: (Math.random() - 0.5) * 15,
+            vy: Math.random() * -22 - 8,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            size: Math.random() * 8 + 3,
+            rot: Math.random() * 360,
+            rs: (Math.random() - 0.5) * 12,
+            g: 0.4
+          });
+        }
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          var alive = false;
+          for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+            p.x += p.vx; p.vy += p.g; p.y += p.vy;
+            p.rot += p.rs; p.vx *= 0.99;
+            if (p.y < canvas.height + 60) {
+              alive = true;
+              ctx.save();
+              ctx.translate(p.x, p.y);
+              ctx.rotate(p.rot * Math.PI / 180);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+              ctx.restore();
+            }
+          }
+          if (alive) requestAnimationFrame(animate);
+          else canvas.remove();
+        }
+        requestAnimationFrame(animate);
+      };
+    </script>
+
+    <!-- Konami Code Easter Egg -->
+    <script is:inline>
+      (function() {
+        var seq = [38,38,40,40,37,39,37,39,66,65];
+        var pos = 0;
+        document.addEventListener('keydown', function(e) {
+          if (e.keyCode === seq[pos]) {
+            pos++;
+            if (pos === seq.length) {
+              pos = 0;
+              activateEasterEgg();
+            }
+          } else { pos = 0; }
+        });
+        function activateEasterEgg() {
+          var container = document.createElement('div');
+          container.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;';
+          document.body.appendChild(container);
+          var emojis = ['🍊','🍪','🍊','🍪','⭐','✨','🎵','🎶','🍊','🍪'];
+          for (var i = 0; i < 40; i++) {
+            var el = document.createElement('span');
+            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            el.style.cssText = 'position:absolute;top:-50px;font-size:' + (Math.random()*2+1.5) + 'rem;left:' + (Math.random()*100) + '%;animation:emojiRain ' + (Math.random()*3+2) + 's linear forwards;animation-delay:' + (Math.random()*2) + 's;';
+            container.appendChild(el);
+          }
+          var msg = document.createElement('div');
+          msg.textContent = '🍊🍪 YOU FOUND THE SECRET! 🍪🍊';
+          msg.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0A0A0A;color:#FF9F1C;font-family:"Bebas Neue",sans-serif;font-size:clamp(1.5rem,4vw,3rem);letter-spacing:4px;padding:24px 48px;z-index:100000;box-shadow:8px 8px 0 #2EC4B6;pointer-events:auto;animation:fadeSlideIn 0.3s ease;';
+          container.appendChild(msg);
+          setTimeout(function() { container.remove(); }, 5000);
+        }
+      })();
+    </script>
   </body>
 </html>
 

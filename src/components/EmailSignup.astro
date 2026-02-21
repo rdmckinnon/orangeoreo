@@ -1,5 +1,5 @@
 ---
-// Email signup section
+// Email signup section with fan counter
 ---
 
 <section class="email-section">
@@ -21,6 +21,7 @@
         <button type="submit" class="btn btn-primary" id="subscribe-btn">SUBSCRIBE</button>
       </form>
       <p class="form-message" id="form-message"></p>
+      <div class="fan-counter" id="fan-counter"></div>
     </div>
   </div>
 </section>
@@ -44,45 +45,81 @@
 </style>
 
 <script>
-  const form = document.getElementById('subscribe-form');
-  const input = document.getElementById('email-input');
-  const btn = document.getElementById('subscribe-btn');
-  const message = document.getElementById('form-message');
+  function initEmailSignup() {
+    const form = document.getElementById('subscribe-form');
+    const input = document.getElementById('email-input') as HTMLInputElement;
+    const btn = document.getElementById('subscribe-btn');
+    const message = document.getElementById('form-message');
+    const counter = document.getElementById('fan-counter');
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const email = input?.value;
-    if (!email) return;
-
-    btn.disabled = true;
-    btn.textContent = 'JOINING...';
-    message.textContent = '';
-    message.className = 'form-message';
-
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        message.textContent = "YOU'RE IN! WELCOME TO THE CREW.";
-        message.className = 'form-message success';
-        input.value = '';
-      } else {
-        message.textContent = data.error || 'Something went wrong';
-        message.className = 'form-message error';
+    // Load fan count
+    async function loadFanCount() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        if (data.count > 0 && counter) {
+          counter.innerHTML = `<span class="fan-count">${data.count}</span> CREW MEMBERS AND COUNTING`;
+        }
+      } catch (e) {
+        // No counter shown if API unavailable
       }
-    } catch (err) {
-      message.textContent = 'Could not connect. Try again later.';
-      message.className = 'form-message error';
     }
+    loadFanCount();
 
-    btn.disabled = false;
-    btn.textContent = 'SUBSCRIBE';
-  });
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = input?.value;
+      if (!email) return;
+
+      if (btn) {
+        (btn as HTMLButtonElement).disabled = true;
+        btn.textContent = 'JOINING...';
+      }
+      if (message) {
+        message.textContent = '';
+        message.className = 'form-message';
+      }
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          if (message) {
+            message.textContent = "YOU'RE IN! WELCOME TO THE CREW.";
+            message.className = 'form-message success';
+          }
+          if (input) input.value = '';
+          // Fire confetti!
+          if (window.fireConfetti) window.fireConfetti();
+          // Refresh counter
+          loadFanCount();
+        } else {
+          if (message) {
+            message.textContent = data.error || 'Something went wrong';
+            message.className = 'form-message error';
+          }
+        }
+      } catch (err) {
+        if (message) {
+          message.textContent = 'Could not connect. Try again later.';
+          message.className = 'form-message error';
+        }
+      }
+
+      if (btn) {
+        (btn as HTMLButtonElement).disabled = false;
+        btn.textContent = 'SUBSCRIBE';
+      }
+    });
+  }
+
+  initEmailSignup();
+  document.addEventListener('astro:after-swap', initEmailSignup);
 </script>

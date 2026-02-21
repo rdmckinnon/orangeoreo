@@ -170,8 +170,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-title .highlight {
-  color: var(--amber-glow);
   display: block;
+  background: linear-gradient(135deg, var(--amber-glow), var(--honey-bronze), var(--sea-green-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-subtitle {
@@ -207,11 +210,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-right {
-  background: linear-gradient(135deg, var(--amber-glow) 0%, var(--honey-bronze) 50%, var(--sea-green-light) 100%);
+  background: linear-gradient(135deg, var(--amber-glow) 0%, var(--honey-bronze) 25%, var(--sea-green-light) 50%, var(--honey-bronze) 75%, var(--amber-glow) 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 8s ease infinite;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 32px;
   position: relative;
+  overflow: hidden;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .hero-badge {
@@ -223,6 +237,14 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 4px;
   transform: rotate(-5deg);
   box-shadow: 8px 8px 0 var(--white);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-badge:hover {
+  transform: rotate(-5deg) scale(1.1);
+  box-shadow: 12px 12px 0 var(--white);
 }
 
 /* ═══════════════════════════════════════════
@@ -267,6 +289,22 @@ section {
   padding: 48px;
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+
+.band-member:hover {
+  transform: translateY(-8px) rotate(-1deg);
+  box-shadow: 12px 12px 0 var(--amber-glow);
+}
+
+.band-member:hover .member-emoji {
+  animation: emojiBounce 0.6s ease infinite;
+}
+
+@keyframes emojiBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 .band-member::before {
@@ -465,10 +503,27 @@ section {
   font-family: var(--font-display);
   font-size: 3rem;
   letter-spacing: 8px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+  cursor: default;
+}
+
+.footer-logo:hover {
+  transform: scale(1.05);
+}
+
+.footer-logo:hover span {
+  animation: colorPulse 1s ease infinite;
 }
 
 .footer-logo span {
   color: var(--amber-glow);
+  transition: color 0.3s ease;
+}
+
+@keyframes colorPulse {
+  0%, 100% { color: var(--amber-glow); }
+  50% { color: var(--sea-green); }
 }
 
 .footer-tagline {
@@ -818,6 +873,729 @@ section {
     flex-direction: column;
     gap: 16px;
   }
+}
+
+/* ═══════════════════════════════════════════
+   HERO VISUAL — VINYL RECORD
+   ═══════════════════════════════════════════ */
+.hero-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.vinyl {
+  width: clamp(200px, 25vw, 320px);
+  height: clamp(200px, 25vw, 320px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 12%, transparent 12.5%),
+    radial-gradient(circle,
+      var(--amber-glow) 0%, var(--honey-bronze) 14%,
+      var(--black) 14.5%, var(--black) 16%,
+      #1a1a1a 16.2%, var(--black) 16.8%,
+      #1a1a1a 20%, var(--black) 20.5%,
+      #1a1a1a 24%, var(--black) 24.5%,
+      #1a1a1a 28%, var(--black) 28.5%,
+      #1a1a1a 32%, var(--black) 32.5%,
+      #1a1a1a 38%, var(--black) 38.5%,
+      #1a1a1a 44%, var(--black) 44.5%,
+      #1a1a1a 50%, var(--black) 50.5%,
+      #1a1a1a 56%, var(--black) 56.5%,
+      #1a1a1a 62%, var(--black) 62.5%,
+      #1a1a1a 68%, var(--black) 68.5%,
+      #1a1a1a 74%, var(--black) 74.5%,
+      #1a1a1a 80%, var(--black) 80.5%,
+      #1a1a1a 86%, var(--black) 86.5%,
+      #1a1a1a 92%, var(--black) 92.5%,
+      #1a1a1a 96%, var(--black) 100%
+    );
+  animation: vinylSpin 4s linear infinite;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.vinyl::before {
+  content: '';
+  position: absolute;
+  width: 24%;
+  height: 24%;
+  top: 38%;
+  left: 38%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--amber-glow), var(--honey-bronze));
+  z-index: 1;
+}
+
+.vinyl::after {
+  content: 'OO';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  color: var(--black);
+  letter-spacing: 2px;
+  z-index: 2;
+}
+
+.vinyl-hole {
+  position: absolute;
+  width: 6%;
+  height: 6%;
+  top: 47%;
+  left: 47%;
+  border-radius: 50%;
+  background: var(--white);
+  mix-blend-mode: overlay;
+  z-index: 3;
+}
+
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.vinyl:hover {
+  animation-duration: 1.5s;
+}
+
+/* Floating emojis in hero */
+.floating-emojis {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.floating-emoji {
+  position: absolute;
+  font-size: 2rem;
+  animation: floatEmoji 6s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+.floating-emoji:nth-child(1) { top: 15%; left: 10%; animation-delay: 0s; animation-duration: 5s; }
+.floating-emoji:nth-child(2) { top: 70%; left: 85%; animation-delay: 1s; animation-duration: 7s; }
+.floating-emoji:nth-child(3) { top: 40%; left: 75%; animation-delay: 2s; animation-duration: 6s; font-size: 1.5rem; }
+.floating-emoji:nth-child(4) { top: 80%; left: 20%; animation-delay: 0.5s; animation-duration: 8s; font-size: 1.2rem; }
+.floating-emoji:nth-child(5) { top: 25%; left: 60%; animation-delay: 3s; animation-duration: 5.5s; font-size: 1.8rem; }
+.floating-emoji:nth-child(6) { top: 60%; left: 40%; animation-delay: 1.5s; animation-duration: 6.5s; font-size: 1rem; }
+
+@keyframes floatEmoji {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-20px) rotate(10deg); }
+  50% { transform: translateY(-8px) rotate(-5deg); }
+  75% { transform: translateY(-25px) rotate(8deg); }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+   ═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ═══════════════════════════════════════════
+   VIEW TRANSITIONS
+   ═══════════════════════════════════════════ */
+::view-transition-old(root) {
+  animation: fadeSlideOut 0.25s ease-in forwards;
+}
+
+::view-transition-new(root) {
+  animation: fadeSlideIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeSlideOut {
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   MERCH SECTION
+   ═══════════════════════════════════════════ */
+.merch-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.merch-card {
+  background: var(--white);
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.merch-card:hover {
+  border-color: var(--black);
+  transform: translateY(-6px);
+  box-shadow: 8px 8px 0 var(--amber-glow);
+}
+
+.merch-emoji {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.merch-card:hover .merch-emoji {
+  transform: scale(1.2) rotate(-5deg);
+}
+
+.merch-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.merch-price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--amber-glow);
+  margin-bottom: 16px;
+}
+
+.merch-badge {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  padding: 6px 12px;
+  background: var(--black);
+  color: var(--white);
+}
+
+@media (max-width: 1024px) {
+  .merch-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .merch-grid { grid-template-columns: 1fr; max-width: 300px; margin: 0 auto; }
+}
+
+/* ═══════════════════════════════════════════
+   MERCH PAGE
+   ═══════════════════════════════════════════ */
+
+/* Hero */
+.merch-page-hero {
+  background: var(--black);
+  padding: 120px 0;
+  position: relative;
+  overflow: hidden;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.merch-page-hero::before {
+  content: 'OO';
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 50vw;
+  color: rgba(255, 159, 28, 0.04);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.merch-page-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.merch-float-emoji {
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.12;
+  animation: floatEmoji 6s ease-in-out infinite;
+}
+
+.merch-float-emoji:nth-child(2) { animation-delay: 1s; animation-duration: 7s; }
+.merch-float-emoji:nth-child(3) { animation-delay: 2s; animation-duration: 5.5s; }
+.merch-float-emoji:nth-child(4) { animation-delay: 0.5s; animation-duration: 8s; }
+.merch-float-emoji:nth-child(5) { animation-delay: 3s; animation-duration: 6.5s; font-size: 2rem; }
+.merch-float-emoji:nth-child(6) { animation-delay: 1.5s; animation-duration: 5s; font-size: 2rem; }
+
+.merch-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 14rem);
+  line-height: 0.85;
+  color: var(--white);
+  letter-spacing: -3px;
+  animation: merchTitleReveal 0.8s ease-out;
+}
+
+.merch-page-title-highlight {
+  display: block;
+  background: linear-gradient(135deg, var(--amber-glow), var(--honey-bronze), var(--sea-green-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes merchTitleReveal {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+.merch-page-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 32px;
+  line-height: 1.7;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Product Preview Pills */
+.merch-page-pills {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.merch-pill {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.merch-pill:hover {
+  border-color: var(--amber-glow);
+  color: var(--amber-glow);
+  transform: translateY(-2px);
+}
+
+.merch-pill-hot {
+  border-color: var(--amber-glow);
+  color: var(--amber-glow);
+  background: rgba(255, 159, 28, 0.1);
+}
+
+/* Bento Product Grid */
+.merch-bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 24px;
+}
+
+/* Product Cards */
+.product-card {
+  background: var(--white);
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.product-card::before {
+  content: attr(data-watermark);
+  position: absolute;
+  font-size: 16rem;
+  top: -20px;
+  right: -10px;
+  opacity: 0.06;
+  line-height: 1;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.product-card:hover {
+  border-color: var(--black);
+  transform: translateY(-8px);
+  box-shadow: 8px 8px 0 var(--amber-glow);
+}
+
+.product-card:hover::before {
+  opacity: 0.1;
+  transform: scale(1.05) rotate(-3deg);
+}
+
+.product-card:hover .product-emoji {
+  animation: emojiBounce 0.6s ease infinite;
+}
+
+.product-card:hover .product-price {
+  text-shadow: 0 0 24px rgba(255, 159, 28, 0.4);
+}
+
+/* Featured Card (Ice Cream) */
+.product-featured {
+  grid-row: 1 / 3;
+  background: linear-gradient(170deg, var(--frozen-water-light) 0%, var(--frozen-water) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product-featured .product-emoji {
+  font-size: 6rem;
+}
+
+.product-featured .product-name {
+  font-size: 2.5rem;
+}
+
+.product-featured .product-desc {
+  max-width: 360px;
+}
+
+.product-featured .product-price {
+  font-size: 2.5rem;
+}
+
+.product-featured::before {
+  font-size: 22rem;
+  top: -30px;
+}
+
+.product-badge-top {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  padding: 8px 16px;
+  background: var(--amber-glow);
+  color: var(--black);
+  margin-bottom: 28px;
+}
+
+/* Wide Card (Mugs & Erasers) */
+.product-wide {
+  grid-column: 1 / -1;
+}
+
+.product-wide-layout {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.product-wide .product-emoji {
+  font-size: 5rem;
+  flex-shrink: 0;
+}
+
+.product-wide .product-name {
+  font-size: 2rem;
+}
+
+/* Product Elements */
+.product-emoji {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.product-name {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+}
+
+.product-desc {
+  margin-top: 12px;
+  line-height: 1.7;
+  opacity: 0.6;
+  font-size: 0.95rem;
+}
+
+.product-price {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--amber-glow);
+  margin-top: 20px;
+  letter-spacing: 1px;
+  transition: text-shadow 0.3s ease;
+}
+
+.product-status {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  padding: 6px 14px;
+  background: var(--black);
+  color: var(--white);
+  margin-top: 16px;
+}
+
+/* Statement */
+.merch-page-statement {
+  background: var(--black);
+  padding: 100px 0;
+  text-align: center;
+}
+
+.merch-page-statement-text {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--white);
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.15;
+}
+
+.merch-page-statement-text em {
+  color: var(--amber-glow);
+  font-style: normal;
+  text-shadow: 0 0 40px rgba(255, 159, 28, 0.3);
+}
+
+/* Merch Page Responsive */
+@media (max-width: 1024px) {
+  .merch-bento {
+    grid-template-columns: 1fr;
+  }
+  .product-featured {
+    grid-row: auto;
+  }
+  .product-wide {
+    grid-column: auto;
+  }
+  .merch-page-hero {
+    min-height: auto;
+    padding: 80px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .merch-page-hero {
+    padding: 60px 0;
+  }
+  .product-card {
+    padding: 32px;
+  }
+  .product-featured .product-emoji {
+    font-size: 4rem;
+  }
+  .product-featured .product-name {
+    font-size: 2rem;
+  }
+  .product-featured .product-price {
+    font-size: 2rem;
+  }
+  .product-wide-layout {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+  .merch-page-pills {
+    gap: 8px;
+  }
+  .merch-pill {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   FAN COUNTER
+   ═══════════════════════════════════════════ */
+.fan-counter {
+  margin-top: 32px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  color: var(--sea-green-dark);
+}
+
+.fan-count {
+  color: var(--amber-glow);
+  font-size: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════
+   GUESTBOOK
+   ═══════════════════════════════════════════ */
+.guestbook-hero {
+  background: var(--black);
+  padding: 80px 0;
+  text-align: center;
+}
+
+.guestbook-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--white);
+  letter-spacing: -2px;
+}
+
+.guestbook-hero p {
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 12px;
+  font-size: 1.1rem;
+}
+
+.guestbook-form-section {
+  padding: 60px 0;
+  background: var(--frozen-water);
+}
+
+.guestbook-form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guestbook-form textarea {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  padding: 18px 24px;
+  border: 2px solid var(--black);
+  background: var(--white);
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s ease;
+}
+
+.guestbook-form textarea:focus {
+  border-color: var(--amber-glow);
+  box-shadow: 4px 4px 0 var(--amber-glow);
+}
+
+.guestbook-wall {
+  padding: 80px 0;
+}
+
+.message-grid {
+  columns: 3;
+  column-gap: 24px;
+}
+
+.message-card {
+  background: var(--white);
+  padding: 24px;
+  margin-bottom: 24px;
+  break-inside: avoid;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.message-card:hover {
+  border-color: var(--amber-glow);
+  transform: rotate(-1deg);
+}
+
+.message-author {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  color: var(--amber-glow);
+}
+
+.message-text {
+  margin-top: 8px;
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.message-time {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.4;
+}
+
+.guestbook-empty {
+  text-align: center;
+  padding: 60px 0;
+  opacity: 0.5;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 1024px) {
+  .message-grid { columns: 2; }
+}
+
+@media (max-width: 600px) {
+  .message-grid { columns: 1; }
+}
+
+/* ═══════════════════════════════════════════
+   404 FALLING EMOJIS
+   ═══════════════════════════════════════════ */
+.emoji-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.rain-emoji {
+  position: absolute;
+  top: -50px;
+  animation: emojiRain linear infinite;
+  font-size: 2rem;
+}
+
+@keyframes emojiRain {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   CONFETTI CANVAS
+   ═══════════════════════════════════════════ */
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════════

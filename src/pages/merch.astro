@@ -1,0 +1,164 @@
+---
+import Layout from '../layouts/Layout.astro';
+import EmailSignup from '../components/EmailSignup.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Merch" description="Official Orange Oreo merchandise — wear it, sip it, hang it, taste it" image="/og-merch.png">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <a href="/" class="page-logo">ORANGE <span>OREO</span></a>
+      <div class="page-badge">THE MERCH DROP</div>
+    </div>
+  </header>
+
+  <!-- Merch Marquee -->
+  <div class="marquee">
+    <div class="marquee-inner">
+      <span class="marquee-text">NEW DROPS <span>★</span> LIMITED EDITION <span>★</span> OO OFFICIAL <span>★</span> CITRUS COLLECTION <span>★</span></span>
+      <span class="marquee-text">NEW DROPS <span>★</span> LIMITED EDITION <span>★</span> OO OFFICIAL <span>★</span> CITRUS COLLECTION <span>★</span></span>
+      <span class="marquee-text">NEW DROPS <span>★</span> LIMITED EDITION <span>★</span> OO OFFICIAL <span>★</span> CITRUS COLLECTION <span>★</span></span>
+      <span class="marquee-text">NEW DROPS <span>★</span> LIMITED EDITION <span>★</span> OO OFFICIAL <span>★</span> CITRUS COLLECTION <span>★</span></span>
+    </div>
+  </div>
+
+  <!-- Merch Hero -->
+  <section class="merch-page-hero">
+    <div class="merch-page-hero-bg">
+      <span class="merch-float-emoji" style="top: 12%; left: 8%;">🖊️</span>
+      <span class="merch-float-emoji" style="top: 18%; right: 10%;">☕</span>
+      <span class="merch-float-emoji" style="bottom: 22%; left: 12%;">🖼️</span>
+      <span class="merch-float-emoji" style="bottom: 15%; right: 7%;">🍦</span>
+      <span class="merch-float-emoji" style="top: 55%; left: 4%;">🍊</span>
+      <span class="merch-float-emoji" style="top: 45%; right: 4%;">🍪</span>
+    </div>
+    <div class="container" style="text-align: center; position: relative; z-index: 1;">
+      <h1 class="merch-page-title">
+        THE<br>
+        <span class="merch-page-title-highlight">MERCH DROP</span>
+      </h1>
+      <p class="merch-page-subtitle">
+        Official Orange Oreo collection. Limited runs. Bold choices.<br>
+        If you know, you know.
+      </p>
+      <div class="merch-page-pills">
+        <span class="merch-pill">🖊️ PENS</span>
+        <span class="merch-pill">☕ MUGS</span>
+        <span class="merch-pill">🖼️ POSTERS</span>
+        <span class="merch-pill merch-pill-hot">🍦 ICE CREAM</span>
+      </div>
+      <div style="margin-top: 48px; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+        <a href="#collection" class="btn btn-primary">SHOP THE DROP →</a>
+        <button type="button" class="btn btn-outline" style="border-color: rgba(255,255,255,0.2); color: var(--white);" onclick="shareMerch()">SHARE</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Collection -->
+  <section id="collection">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">THE COLLECTION</h2>
+      </div>
+
+      <div class="merch-bento">
+        <!-- Featured: Ice Cream -->
+        <div class="product-card product-featured reveal" data-watermark="🍦">
+          <div class="product-badge-top">FEATURED DROP</div>
+          <span class="product-emoji">🍦</span>
+          <h3 class="product-name">CITRUS DREAM ICE CREAM</h3>
+          <p class="product-desc">Taste the tour. Orange cream swirl meets cookie crumble in a limited batch collaboration. One scoop of sunshine, one scoop of sweet.</p>
+          <div class="product-price">$8</div>
+          <span class="product-status">LIMITED BATCH</span>
+        </div>
+
+        <!-- Posters -->
+        <div class="product-card reveal reveal-delay-1" data-watermark="🖼️">
+          <span class="product-emoji">🖼️</span>
+          <h3 class="product-name">OO TOUR POSTERS</h3>
+          <p class="product-desc">Your walls called. They want the vibes. Limited edition full-size tour poster.</p>
+          <div class="product-price">$12</div>
+          <span class="product-status">COMING SOON</span>
+        </div>
+
+        <!-- Pens -->
+        <div class="product-card reveal reveal-delay-2" data-watermark="🖊️">
+          <span class="product-emoji">🖊️</span>
+          <h3 class="product-name">OO CITRUS PEN</h3>
+          <p class="product-desc">One pen. One vibe. All citrus. Gel ink that writes like a dream.</p>
+          <div class="product-price">$2</div>
+          <span class="product-status">PACK OF 1</span>
+        </div>
+
+        <!-- Mugs -->
+        <div class="product-card reveal reveal-delay-3" data-watermark="☕">
+          <span class="product-emoji">☕</span>
+          <h3 class="product-name">OO CERAMIC MUG</h3>
+          <p class="product-desc">Sip your dreams. OO branded ceramic mug for your morning citrus fix.</p>
+          <div class="product-price">$10</div>
+          <span class="product-status">IN STOCK</span>
+        </div>
+
+        <!-- Mini Erasers -->
+        <div class="product-card reveal reveal-delay-4" data-watermark="✏️">
+          <span class="product-emoji">✏️</span>
+          <h3 class="product-name">MINI FRUIT ERASERS</h3>
+          <p class="product-desc">Erase your doubts. A set of mini fruit-shaped erasers for your desk.</p>
+          <div class="product-price">$5</div>
+          <span class="product-status">IN STOCK</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statement -->
+  <section class="merch-page-statement">
+    <div class="container">
+      <p class="merch-page-statement-text reveal">
+        WEAR IT. <em>SIP IT.</em> HANG IT. <em>TASTE IT.</em><br>
+        THAT'S THE <em>OO</em> LIFESTYLE.
+      </p>
+    </div>
+  </section>
+
+  <EmailSignup />
+  <Footer />
+</Layout>
+
+<script is:inline>
+  async function shareMerch() {
+    const shareData = {
+      title: 'Orange Oreo — The Merch Drop',
+      text: 'Check out the official Orange Oreo merch! Limited runs, bold choices. 🍊🍪',
+      url: 'https://orangeoreo.pages.dev/merch'
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (e) {
+        // User cancelled or share failed — fall through to clipboard
+      }
+    }
+
+    // Fallback: copy link to clipboard
+    try {
+      await navigator.clipboard.writeText(shareData.url);
+      var btn = document.querySelector('[onclick="shareMerch()"]');
+      var original = btn.textContent;
+      btn.textContent = 'LINK COPIED!';
+      btn.style.borderColor = 'var(--amber-glow)';
+      btn.style.color = 'var(--amber-glow)';
+      setTimeout(function() {
+        btn.textContent = original;
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2000);
+    } catch (e) {
+      // Nothing to do
+    }
+  }
+</script>

@@ -7,5 +7,34 @@
     <div class="footer-logo">ORANGE <span>OREO</span></div>
     <p class="footer-tagline">Sweet melodies, citrus dreams</p>
     <p class="footer-members">🍊 ADDY & EMMA 🍪</p>
+    <nav class="footer-nav">
+      <a href="/" class="footer-link">HOME</a>
+      <a href="/merch" class="footer-link">MERCH</a>
+      <a href="/tickets" class="footer-link">TICKETS</a>
+      <a href="/guestbook" class="footer-link">FAN WALL</a>
+    </nav>
   </div>
 </footer>
+
+<style>
+  .footer-nav {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+  }
+
+  .footer-link {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .footer-link:hover {
+    color: var(--amber-glow);
+  }
+</style>

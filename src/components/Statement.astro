@@ -1,29 +1,29 @@
 ---
-// Poem / lyrics section
+// Poem / lyrics section with scroll-reveal verses
 ---
 
 <section class="statement poem-section">
   <div class="container">
     <div class="poem">
-      <div class="verse">
+      <div class="verse reveal">
         <p>City breathing and <em>neon dreams</em></p>
         <p>Every crack still shines somehow</p>
         <p>We've been running on almost</p>
         <p>But we're <em>standing here right now</em></p>
       </div>
-      <div class="verse">
+      <div class="verse reveal reveal-delay-1">
         <p>Broken clocks and late night calls</p>
         <p>Hearts that learn to <em>bend not break</em></p>
         <p>Every scar a map that says</p>
         <p>We survived, we'll try to stay</p>
       </div>
-      <div class="verse">
+      <div class="verse reveal reveal-delay-2">
         <p>We were ghosts in the crowded room</p>
         <p><em>Invisible but still burning bright</em></p>
         <p>The echo of our footsteps sounds</p>
         <p>Like thunder in the night</p>
       </div>
-      <div class="verse">
+      <div class="verse reveal reveal-delay-3">
         <p>All the doors they tried to lock</p>
         <p>All the names they try to use</p>
         <p>Look at us <em>still standing</em></p>
@@ -63,5 +63,11 @@
   .verse em {
     color: var(--amber-glow);
     font-style: normal;
+    text-shadow: 0 0 20px rgba(255, 159, 28, 0.4);
+    transition: text-shadow 0.3s ease;
+  }
+
+  .verse:hover em {
+    text-shadow: 0 0 40px rgba(255, 159, 28, 0.8), 0 0 80px rgba(255, 159, 28, 0.3);
   }
 </style>
