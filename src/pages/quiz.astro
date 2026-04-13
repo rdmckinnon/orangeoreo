@@ -1,0 +1,18 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Quiz from '../components/Quiz.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="The Quiz" description="Are you an Addy or an Emma? Take the quiz and find out!">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <a href="/" class="page-logo">ORANGE <span>OREO</span></a>
+      <div class="page-badge">THE QUIZ</div>
+    </div>
+  </header>
+
+  <Quiz />
+  <Footer />
+</Layout>

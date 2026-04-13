@@ -1,0 +1,688 @@
+---
+// Quiz component — "Are you an Addy or an Emma?"
+// All quiz logic: intro, questions, vibe meter, result
+---
+
+<div class="quiz-container" id="quiz">
+  <!-- INTRO SCREEN -->
+  <div class="quiz-intro" id="quiz-intro">
+    <div class="quiz-intro-emojis">🍊 🍪</div>
+    <h1 class="quiz-intro-title">ARE YOU AN<br><span class="highlight-addy">ADDY</span> OR AN <span class="highlight-emma">EMMA</span>?</h1>
+    <p class="quiz-intro-subtitle">7 questions. Tap your vibe. Find out which half of Orange Oreo you really are.</p>
+    <button class="btn btn-primary quiz-start-btn" id="quiz-start">START THE QUIZ →</button>
+    <p class="quiz-intro-stats" id="quiz-intro-stats"></p>
+  </div>
+
+  <!-- QUESTION SCREEN -->
+  <div class="quiz-question" id="quiz-question" style="display:none;">
+    <!-- Progress -->
+    <div class="quiz-progress">
+      <span class="quiz-progress-text" id="quiz-progress-text">1 / 7</span>
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Vibe Meter -->
+    <div class="quiz-vibe-meter">
+      <span class="vibe-emoji">🍊</span>
+      <div class="vibe-track">
+        <div class="vibe-dot" id="vibe-dot"></div>
+      </div>
+      <span class="vibe-emoji">🍪</span>
+    </div>
+
+    <!-- Question Content (swapped by JS) -->
+    <div class="quiz-question-content" id="quiz-question-content">
+      <p class="quiz-category" id="quiz-category"></p>
+      <h2 class="quiz-prompt" id="quiz-prompt"></h2>
+      <div class="quiz-answers" id="quiz-answers"></div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="quiz-result" id="quiz-result" style="display:none;">
+    <div class="quiz-result-emoji" id="result-emoji"></div>
+    <h1 class="quiz-result-title" id="result-title"></h1>
+    <div class="quiz-result-badge" id="result-badge"></div>
+    <!-- Result vibe meter (filled bar) -->
+    <div class="quiz-vibe-meter quiz-vibe-result">
+      <span class="vibe-emoji">🍊</span>
+      <div class="vibe-track">
+        <div class="vibe-fill-addy" id="result-vibe-addy"></div>
+        <div class="vibe-fill-emma" id="result-vibe-emma"></div>
+      </div>
+      <span class="vibe-emoji">🍪</span>
+    </div>
+    <p class="quiz-result-desc" id="result-desc"></p>
+    <div class="quiz-result-actions">
+      <button class="btn btn-primary" id="result-share">SHARE MY RESULT</button>
+      <button class="btn btn-outline" id="result-retake">TAKE IT AGAIN</button>
+    </div>
+    <p class="quiz-result-stats" id="result-stats"></p>
+  </div>
+</div>
+
+<style>
+  .quiz-container {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* === INTRO === */
+  .quiz-intro {
+    text-align: center;
+    max-width: 500px;
+  }
+
+  .quiz-intro-emojis {
+    font-size: 4rem;
+    margin-bottom: 16px;
+  }
+
+  .quiz-intro-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    line-height: 0.95;
+    letter-spacing: -1px;
+  }
+
+  .highlight-addy { color: var(--amber-glow); }
+  .highlight-emma { color: var(--sea-green); }
+
+  .quiz-intro-subtitle {
+    margin-top: 24px;
+    opacity: 0.5;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  .quiz-start-btn {
+    margin-top: 32px;
+  }
+
+  .quiz-intro-stats,
+  .quiz-result-stats {
+    margin-top: 32px;
+    opacity: 0.3;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* === QUESTION === */
+  .quiz-question {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .quiz-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .quiz-progress-text {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    font-family: var(--font-body);
+  }
+
+  .quiz-progress-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber-glow), var(--sea-green));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* === VIBE METER === */
+  .quiz-vibe-meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0 32px;
+  }
+
+  .vibe-emoji {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  .vibe-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vibe-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--amber-glow);
+    border: 3px solid var(--white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: left 0.5s ease, background 0.5s ease;
+  }
+
+  /* Result vibe meter fills */
+  .quiz-vibe-result {
+    max-width: 300px;
+    margin: 24px auto;
+  }
+
+  .quiz-vibe-result .vibe-track {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .vibe-fill-addy {
+    height: 100%;
+    background: linear-gradient(90deg, var(--amber-glow), var(--honey-bronze));
+    transition: width 0.8s ease;
+  }
+
+  .vibe-fill-emma {
+    height: 100%;
+    background: linear-gradient(90deg, var(--sea-green-light), var(--sea-green));
+    transition: width 0.8s ease;
+  }
+
+  /* === QUESTION CONTENT === */
+  .quiz-question-content {
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+
+  .quiz-question-content.slide-out {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .quiz-question-content.slide-in {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  .quiz-category {
+    font-size: 0.75rem;
+    opacity: 0.4;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+
+  .quiz-prompt {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    margin: 8px 0 24px;
+    letter-spacing: 1px;
+  }
+
+  .quiz-answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .quiz-answer {
+    background: var(--white);
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .quiz-answer:hover {
+    border-color: rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .quiz-answer:active {
+    transform: translateY(0);
+  }
+
+  .quiz-answer.selected-addy {
+    border-color: var(--amber-glow);
+    background: #FFF5E6;
+    transform: scale(0.96);
+  }
+
+  .quiz-answer.selected-emma {
+    border-color: var(--sea-green);
+    background: #F0FFFE;
+    transform: scale(0.96);
+  }
+
+  .quiz-answer-emoji {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .quiz-answer-label {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* === RESULT === */
+  .quiz-result {
+    text-align: center;
+    max-width: 500px;
+    animation: fadeSlideUp 0.6s ease;
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .quiz-result-emoji {
+    font-size: 5rem;
+    margin-bottom: 8px;
+  }
+
+  .quiz-result-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 7vw, 3rem);
+    letter-spacing: 2px;
+  }
+
+  .quiz-result-badge {
+    display: inline-block;
+    background: var(--black);
+    padding: 8px 20px;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-top: 16px;
+  }
+
+  .quiz-result-badge.addy { color: var(--amber-glow); }
+  .quiz-result-badge.emma { color: var(--sea-green); }
+  .quiz-result-badge.tie { color: var(--white); }
+
+  .quiz-result-desc {
+    margin-top: 24px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.8;
+    opacity: 0.7;
+  }
+
+  .quiz-result-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 32px;
+  }
+
+  /* Result background tints */
+  .quiz-container.result-addy {
+    background: linear-gradient(180deg, #FFF8F0 0%, var(--frozen-water-light) 100%);
+  }
+  .quiz-container.result-emma {
+    background: linear-gradient(180deg, #F0FFFE 0%, var(--frozen-water-light) 100%);
+  }
+  .quiz-container.result-tie {
+    background: linear-gradient(180deg, #FFF8F0 0%, #F0FFFE 50%, var(--frozen-water-light) 100%);
+  }
+</style>
+
+<script>
+  const questions = [
+    {
+      prompt: "PICK A SNACK",
+      category: "Snacks & Food",
+      answers: [
+        { emoji: "🍊", label: "Tangerines", addy: 2, emma: 0 },
+        { emoji: "🍪", label: "Oreos", addy: 0, emma: 2 },
+        { emoji: "🍯", label: "Honey toast", addy: 1, emma: 0 },
+        { emoji: "🌶️", label: "Hot chips", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "PICK A COLOR",
+      category: "Vibes & Aesthetic",
+      answers: [
+        { emoji: "🌅", label: "Golden Hour", addy: 2, emma: 0 },
+        { emoji: "⚡", label: "Electric Red", addy: 0, emma: 2 },
+        { emoji: "🫧", label: "Soft Mint", addy: 1, emma: 0 },
+        { emoji: "🖤", label: "Midnight Black", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "THE MIC DROPS MID-SONG. WHAT DO YOU DO?",
+      category: "Concert Scenario",
+      answers: [
+        { emoji: "🎨", label: "Freestyle a new song", addy: 2, emma: 0 },
+        { emoji: "🔥", label: "Scream even LOUDER", addy: 0, emma: 2 },
+        { emoji: "😌", label: "Laugh it off", addy: 1, emma: 0 },
+        { emoji: "🤸", label: "Start a mosh pit", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "PICK YOUR WEEKEND PLAN",
+      category: "Social & Friends",
+      answers: [
+        { emoji: "🎨", label: "Paint & chill", addy: 2, emma: 0 },
+        { emoji: "🎢", label: "Theme park", addy: 0, emma: 2 },
+        { emoji: "📖", label: "Read in a hammock", addy: 1, emma: 0 },
+        { emoji: "🛹", label: "Skateboard", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "PICK YOUR STAGE ENTRANCE",
+      category: "Music & Performance",
+      answers: [
+        { emoji: "🦋", label: "Butterfly rain", addy: 2, emma: 0 },
+        { emoji: "🔥", label: "Pyro & flames", addy: 0, emma: 2 },
+        { emoji: "🌸", label: "Flower petal shower", addy: 1, emma: 0 },
+        { emoji: "💥", label: "Explosion of confetti", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "PICK A DOOR",
+      category: "Random & Chaotic",
+      answers: [
+        { emoji: "🚪", label: "The quiet one", addy: 2, emma: 0 },
+        { emoji: "🚪", label: "The one shaking", addy: 0, emma: 2 },
+        { emoji: "🚪", label: "The sparkly one", addy: 1, emma: 0 },
+        { emoji: "🚪", label: "The one on fire", addy: 0, emma: 1 },
+      ]
+    },
+    {
+      prompt: "PICK YOUR EMOJI",
+      category: "Vibes Finale",
+      answers: [
+        { emoji: "🌈", label: "Rainbow", addy: 2, emma: 0 },
+        { emoji: "⚡", label: "Lightning", addy: 0, emma: 2 },
+        { emoji: "☀️", label: "Sunshine", addy: 1, emma: 0 },
+        { emoji: "💣", label: "Boom", addy: 0, emma: 1 },
+      ]
+    },
+  ];
+
+  const results = {
+    addy: {
+      emoji: "🍊",
+      title: "YOU'RE AN ADDY!",
+      desc: "Creative, chill, and full of sunshine — you're the golden hour of Orange Oreo. You bring the ideas, the art, and the calm-before-the-storm energy that makes everything click.",
+    },
+    emma: {
+      emoji: "🍪",
+      title: "YOU'RE AN EMMA!",
+      desc: "Bold, loud, and unstoppable — you're the lightning bolt of Orange Oreo. You bring the energy, the fearlessness, and the in-your-face attitude that turns every moment into an event.",
+    },
+    tie: {
+      emoji: "🍊🍪",
+      title: "YOU'RE A PERFECT ORANGE OREO!",
+      desc: "Half sunshine, half lightning — you're the rare perfect mix. Creative AND fearless, chill AND bold. You don't pick sides because you ARE both sides.",
+    },
+  };
+
+  function initQuiz() {
+    let currentQuestion = 0;
+    let addyScore = 0;
+    let emmaScore = 0;
+
+    const container = document.getElementById('quiz');
+    const introEl = document.getElementById('quiz-intro');
+    const questionEl = document.getElementById('quiz-question');
+    const resultEl = document.getElementById('quiz-result');
+    const startBtn = document.getElementById('quiz-start');
+    const introStats = document.getElementById('quiz-intro-stats');
+    const progressText = document.getElementById('quiz-progress-text');
+    const progressFill = document.getElementById('quiz-progress-fill');
+    const vibeDot = document.getElementById('vibe-dot');
+    const categoryEl = document.getElementById('quiz-category');
+    const promptEl = document.getElementById('quiz-prompt');
+    const answersEl = document.getElementById('quiz-answers');
+    const contentEl = document.getElementById('quiz-question-content');
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const res = await fetch('/api/quiz');
+        const data = await res.json();
+        if (data.total > 0 && introStats) {
+          introStats.textContent = `${data.total.toLocaleString()} FANS HAVE TAKEN THE QUIZ`;
+        }
+      } catch (e) { /* silent */ }
+    }
+    loadStats();
+
+    function showQuestion(index: number) {
+      const q = questions[index];
+      if (progressText) progressText.textContent = `${index + 1} / ${questions.length}`;
+      if (progressFill) progressFill.style.width = `${((index + 1) / questions.length) * 100}%`;
+      if (categoryEl) categoryEl.textContent = q.category;
+      if (promptEl) promptEl.textContent = q.prompt;
+
+      if (answersEl) {
+        answersEl.innerHTML = q.answers.map((a, i) =>
+          `<div class="quiz-answer" data-index="${i}">
+            <span class="quiz-answer-emoji">${a.emoji}</span>
+            <span class="quiz-answer-label">${a.label}</span>
+          </div>`
+        ).join('');
+
+        answersEl.querySelectorAll('.quiz-answer').forEach((el) => {
+          el.addEventListener('click', () => handleAnswer(el as HTMLElement));
+        });
+      }
+
+      updateVibeMeter();
+    }
+
+    function updateVibeMeter() {
+      const total = addyScore + emmaScore;
+      if (!vibeDot) return;
+      if (total === 0) {
+        vibeDot.style.left = '50%';
+        vibeDot.style.background = 'var(--amber-glow)';
+        return;
+      }
+      const addyPct = (addyScore / total) * 100;
+      // Left = 100% Addy, Right = 100% Emma
+      const leftPos = 100 - addyPct;
+      vibeDot.style.left = `${leftPos}%`;
+
+      if (addyPct > 50) {
+        vibeDot.style.background = 'var(--amber-glow)';
+      } else if (addyPct < 50) {
+        vibeDot.style.background = 'var(--sea-green)';
+      } else {
+        vibeDot.style.background = 'var(--honey-bronze)';
+      }
+    }
+
+    function handleAnswer(el: HTMLElement) {
+      const index = parseInt(el.dataset.index || '0');
+      const answer = questions[currentQuestion].answers[index];
+
+      // Disable further clicks
+      answersEl?.querySelectorAll('.quiz-answer').forEach((a) => {
+        (a as HTMLElement).style.pointerEvents = 'none';
+      });
+
+      // Visual feedback
+      const isAddy = answer.addy > answer.emma;
+      el.classList.add(isAddy ? 'selected-addy' : 'selected-emma');
+
+      // Score
+      addyScore += answer.addy;
+      emmaScore += answer.emma;
+      updateVibeMeter();
+
+      // Next question or result
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion >= questions.length) {
+          showResult();
+        } else {
+          // Slide out current, slide in next
+          if (contentEl) {
+            contentEl.classList.add('slide-out');
+            setTimeout(() => {
+              showQuestion(currentQuestion);
+              contentEl.classList.remove('slide-out');
+              contentEl.classList.add('slide-in');
+              void contentEl.offsetWidth;
+              contentEl.classList.remove('slide-in');
+            }, 300);
+          }
+        }
+      }, 600);
+    }
+
+    function showResult() {
+      if (questionEl) questionEl.style.display = 'none';
+
+      // Determine result
+      let resultKey: 'addy' | 'emma' | 'tie';
+      if (addyScore > emmaScore) resultKey = 'addy';
+      else if (emmaScore > addyScore) resultKey = 'emma';
+      else resultKey = 'tie';
+
+      const r = results[resultKey];
+      const total = addyScore + emmaScore;
+      const addyPct = total > 0 ? Math.round((addyScore / total) * 100) : 50;
+      const emmaPct = 100 - addyPct;
+
+      // Set result content
+      const emojiEl = document.getElementById('result-emoji');
+      const titleEl = document.getElementById('result-title');
+      const badgeEl = document.getElementById('result-badge');
+      const descEl = document.getElementById('result-desc');
+      const statsEl = document.getElementById('result-stats');
+      const vibeAddy = document.getElementById('result-vibe-addy');
+      const vibeEmma = document.getElementById('result-vibe-emma');
+
+      if (emojiEl) emojiEl.textContent = r.emoji;
+      if (titleEl) titleEl.textContent = r.title;
+      if (badgeEl) {
+        badgeEl.textContent = resultKey === 'tie'
+          ? '50% ADDY / 50% EMMA'
+          : `${addyPct}% ADDY / ${emmaPct}% EMMA`;
+        badgeEl.className = `quiz-result-badge ${resultKey}`;
+      }
+      if (descEl) descEl.textContent = r.desc;
+
+      // Result vibe meter
+      if (vibeAddy) vibeAddy.style.width = `${addyPct}%`;
+      if (vibeEmma) vibeEmma.style.width = `${emmaPct}%`;
+
+      // Background tint
+      if (container) {
+        container.classList.remove('result-addy', 'result-emma', 'result-tie');
+        container.classList.add(`result-${resultKey}`);
+      }
+
+      if (resultEl) resultEl.style.display = 'block';
+
+      // Confetti
+      if ((window as any).fireConfetti) (window as any).fireConfetti();
+
+      // Post result to API
+      fetch('/api/quiz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ result: resultKey === 'tie' ? 'addy' : resultKey }),
+      }).then(res => res.json()).then(data => {
+        if (data.stats && statsEl) {
+          const s = data.stats;
+          const aPct = s.total > 0 ? Math.round((s.addy / s.total) * 100) : 50;
+          const ePct = 100 - aPct;
+          statsEl.textContent = `${s.total.toLocaleString()} FANS — ${aPct}% ADDY, ${ePct}% EMMA`;
+        }
+      }).catch(() => { /* silent */ });
+    }
+
+    // Share button
+    document.getElementById('result-share')?.addEventListener('click', async () => {
+      const total = addyScore + emmaScore;
+      const addyPct = total > 0 ? Math.round((addyScore / total) * 100) : 50;
+      const winner = addyScore >= emmaScore ? 'Addy' : 'Emma';
+      const emoji = addyScore >= emmaScore ? '🍊' : '🍪';
+
+      const shareData = {
+        title: `I'm ${addyPct > 50 ? 'an Addy' : 'an Emma'}! ${emoji} — Orange Oreo Quiz`,
+        text: `I'm ${addyPct}% ${winner}! Take the quiz and find out if you're an Addy or an Emma 🍊🍪`,
+        url: 'https://orangeoreo.com/quiz',
+      };
+
+      if (navigator.share) {
+        try { await navigator.share(shareData); return; } catch (e) { /* fall through */ }
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareData.url);
+        const btn = document.getElementById('result-share');
+        if (btn) {
+          const original = btn.textContent;
+          btn.textContent = 'LINK COPIED!';
+          btn.style.background = 'var(--black)';
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.style.background = '';
+          }, 2000);
+        }
+      } catch (e) { /* silent */ }
+    });
+
+    // Retake button
+    document.getElementById('result-retake')?.addEventListener('click', () => {
+      currentQuestion = 0;
+      addyScore = 0;
+      emmaScore = 0;
+
+      if (container) container.classList.remove('result-addy', 'result-emma', 'result-tie');
+      if (resultEl) resultEl.style.display = 'none';
+      if (introEl) introEl.style.display = 'block';
+      loadStats();
+    });
+
+    // Start button
+    startBtn?.addEventListener('click', () => {
+      if (introEl) introEl.style.display = 'none';
+      if (questionEl) questionEl.style.display = 'block';
+      showQuestion(0);
+    });
+  }
+
+  initQuiz();
+  document.addEventListener('astro:after-swap', initQuiz);
+</script>
