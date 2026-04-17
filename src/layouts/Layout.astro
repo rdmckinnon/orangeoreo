@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title: string;
@@ -41,7 +41,7 @@ const imageUrl = `${siteUrl}${image}`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
 
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body>
     <slot />
