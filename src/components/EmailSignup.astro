@@ -91,6 +91,7 @@
         const data = await res.json();
 
         if (data.success) {
+          (window as any).umami?.track('email_signup');
           if (message) {
             message.textContent = "YOU'RE IN! WELCOME TO THE CREW.";
             message.className = 'form-message success';

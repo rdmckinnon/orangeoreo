@@ -153,6 +153,7 @@
           denotation
         })
       });
+      window.umami?.track('ticket_request', { ticketType, section, seat });
     } catch (e) {
       // Silent fail - ticket display still works
     }

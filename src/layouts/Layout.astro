@@ -132,6 +132,7 @@ const imageUrl = `${siteUrl}${image}`;
           } else { pos = 0; }
         });
         function activateEasterEgg() {
+          if (window.umami) window.umami.track('easter_egg');
           var container = document.createElement('div');
           container.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;overflow:hidden;';
           document.body.appendChild(container);
